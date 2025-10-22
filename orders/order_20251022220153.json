@@ -1,0 +1,12 @@
+{
+    "order_id": "20251022220153",
+    "customer_name": "naveen",
+    "customer_phone": "7845218956",
+    "items": {
+        "Pasta": 2,
+        "Coffee": 1,
+        "Dosa": 2
+    },
+    "total": 400,
+    "timestamp": "2025-10-22 22:01:53"
+}

@@ -1,0 +1,11 @@
+{
+    "order_id": "20251022215855",
+    "customer_name": "njhvygfghgv",
+    "customer_phone": "1234567890",
+    "items": {
+        "Pasta": 2,
+        "Coffee": 1
+    },
+    "total": 320,
+    "timestamp": "2025-10-22 21:58:55"
+}

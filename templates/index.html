@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .menu-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+        }
+
+        .menu-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .menu-container::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .menu-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+
+        .menu-item {
+            min-width: 250px;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .item-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .item-price {
+            font-size: 1.3em;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #667eea;
+            color: white;
+            font-size: 1.5em;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: #764ba2;
+        }
+
+        .qty-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            font-size: 1.2em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .total-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .total-info {
+            flex: 1;
+        }
+
+        .total-label {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .total-amount {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .order-btn {
+            padding: 20px 50px;
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            font-weight: bold;
+        }
+
+        .order-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .order-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .popup-content {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 500px;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .popup-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .popup-title {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .popup-message {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .popup-close-btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            font-weight: bold;
+        }
+
+        .popup-close-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .customer-form {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .customer-form h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group input.error {
+            border-color: #ff4444;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .menu-item {
+                min-width: 200px;
+            }
+
+            .total-section {
+                text-align: center;
+                flex-direction: column;
+            }
+
+            .popup-content {
+                margin: 20px;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Popup Overlay -->
+        <div class="popup-overlay" id="orderPopup">
+            <div class="popup-content">
+                <div class="popup-icon">✅</div>
+                <div class="popup-title">Order Placed Successfully!</div>
+                <div class="popup-message">Thank you for your order. Your delicious food will be prepared shortly! 🍽️</div>
+                <button class="popup-close-btn" onclick="closePopup()">Awesome!</button>
+            </div>
+        </div>
+
+        <header>
+            <h1>🍽️ Delicious Menu</h1>
+            <p>Select your favorite items and quantities</p>
+        </header>
+
+        <form method="POST" id="orderForm">
+            <!-- Customer Details Form -->
+            <div class="customer-form">
+                <h2>📋 Customer Details</h2>
+                <div class="form-group">
+                    <label for="customerName">Name *</label>
+                    <input type="text" id="customerName" name="customerName" placeholder="Enter your name" required>
+                    <div class="error-message" id="nameError">Please enter your name</div>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Phone Number *</label>
+                    <input type="tel" id="customerPhone" name="customerPhone" placeholder="Enter 10-digit phone number" required pattern="[0-9]{10}">
+                    <div class="error-message" id="phoneError">Please enter a valid 10-digit phone number</div>
+                </div>
+            </div>
+
+            <div class="menu-container">
+                {% set icons = {'Pasta': '🍝', 'Coffee': '☕', 'Momos': '🥟', 'Dosa': '🥞', 'Water': '💧', 'Samosa': '🥙', 'Burger': '🍔'} %}
+                
+                {% for item, price in menu.items() %}
+                <div class="menu-item">
+                    <div class="item-icon">{{ icons.get(item, '🍽️') }}</div>
+                    <div class="item-name">{{ item }}</div>
+                    <div class="item-price">₹{{ price }}</div>
+                    <div class="quantity-control">
+                        <button type="button" class="qty-btn" onclick="decreaseQty('{{ item }}')">−</button>
+                        <input type="number" 
+                               name="{{ item }}" 
+                               id="{{ item }}" 
+                               class="qty-input" 
+                               value="0" 
+                               min="0" 
+                               max="99"
+                               onchange="updateTotal()">
+                        <button type="button" class="qty-btn" onclick="increaseQty('{{ item }}')">+</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="total-section">
+                <div class="total-info">
+                    <div class="total-label">Total Amount:</div>
+                    <div class="total-amount" id="totalDisplay">₹0</div>
+                </div>
+                <button type="submit" class="order-btn" id="orderBtn">
+                    Place Order 🛒
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const menu = {{ menu|tojson }};
+
+        function increaseQty(item) {
+            const input = document.getElementById(item);
+            const currentValue = parseInt(input.value) || 0;
+            if (currentValue < 99) {
+                input.value = currentValue + 1;
+                updateTotal();
+            }
+        }
+
+        function decreaseQty(item) {
+            const input = document.getElementById(item);
+            const currentValue = parseInt(input.value) || 0;
+            if (currentValue > 0) {
+                input.value = currentValue - 1;
+                updateTotal();
+            }
+        }
+
+        function updateTotal() {
+            let total = 0;
+            for (const [item, price] of Object.entries(menu)) {
+                const qty = parseInt(document.getElementById(item).value) || 0;
+                total += price * qty;
+            }
+            document.getElementById('totalDisplay').textContent = '₹' + total;
+            document.getElementById('orderBtn').disabled = total === 0;
+        }
+
+        function closePopup() {
+            document.getElementById('orderPopup').classList.remove('show');
+            // Reset form after closing popup
+            document.getElementById('orderForm').reset();
+            updateTotal();
+        }
+
+        // Handle form submission
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get customer details
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            
+            // Reset error messages
+            document.getElementById('nameError').classList.remove('show');
+            document.getElementById('phoneError').classList.remove('show');
+            document.getElementById('customerName').classList.remove('error');
+            document.getElementById('customerPhone').classList.remove('error');
+            
+            // Validate name
+            if (!customerName) {
+                document.getElementById('nameError').classList.add('show');
+                document.getElementById('customerName').classList.add('error');
+                document.getElementById('customerName').focus();
+                return;
+            }
+            
+            // Validate phone number (10 digits)
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(customerPhone)) {
+                document.getElementById('phoneError').classList.add('show');
+                document.getElementById('customerPhone').classList.add('error');
+                document.getElementById('customerPhone').focus();
+                return;
+            }
+            
+            // Check if any items are ordered
+            let hasItems = false;
+            for (const item of Object.keys(menu)) {
+                const qty = parseInt(document.getElementById(item).value) || 0;
+                if (qty > 0) {
+                    hasItems = true;
+                    break;
+                }
+            }
+            
+            if (!hasItems) {
+                alert('Please select at least one item to order! 🍽️');
+                return;
+            }
+            
+            // If all validation passes, submit the form
+            // Temporarily remove event listener to allow actual submission
+            const form = this;
+            form.removeEventListener('submit', arguments.callee);
+            form.submit();
+        });
+
+        // Show popup if order was successfully placed
+        {% if total > 0 %}
+        window.addEventListener('load', function() {
+            document.getElementById('orderPopup').classList.add('show');
+        });
+        {% endif %}
+
+        // Initialize button state
+        updateTotal();
+    </script>
+</body>
+</html>

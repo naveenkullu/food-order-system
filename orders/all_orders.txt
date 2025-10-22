@@ -1,0 +1,35 @@
+
+============================================================
+Order ID: 20251022215855
+Date & Time: 2025-10-22 21:58:55
+Customer Name: njhvygfghgv
+Phone Number: 1234567890
+
+Ordered Items:
+
+============================================================
+Order ID: 20251022220129
+Date & Time: 2025-10-22 22:01:29
+Customer Name: njhvygfghgv
+Phone Number: 1234567890
+
+Ordered Items:
+  - Pasta: 2 x Rs.120 = Rs.240
+  - Coffee: 1 x Rs.80 = Rs.80
+
+Total Amount: Rs.320
+============================================================
+
+============================================================
+Order ID: 20251022220153
+Date & Time: 2025-10-22 22:01:53
+Customer Name: naveen
+Phone Number: 7845218956
+
+Ordered Items:
+  - Pasta: 2 x Rs.120 = Rs.240
+  - Coffee: 1 x Rs.80 = Rs.80
+  - Dosa: 2 x Rs.40 = Rs.80
+
+Total Amount: Rs.400
+============================================================
