@@ -72,5 +72,4 @@ def home():
     return render_template('index.html', menu=menu, total=total, ordered_items=ordered_items)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-"dddddd"    
+    app.run(debug=True)  
