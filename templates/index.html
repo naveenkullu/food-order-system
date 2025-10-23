@@ -448,6 +448,11 @@
             // Reset form after closing popup
             document.getElementById('orderForm').reset();
             updateTotal();
+            
+            // Clean URL - remove success parameter
+            if (window.location.search.includes('success=true')) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         }
 
         // Handle form submission
@@ -496,19 +501,19 @@
                 return;
             }
             
-            // If all validation passes, submit the form
-            // Temporarily remove event listener to allow actual submission
-            const form = this;
-            form.removeEventListener('submit', arguments.callee);
-            form.submit();
+            // If all validation passes, submit the form (without preventing default)
+            e.target.submit();
         });
 
         // Show popup if order was successfully placed
-        {% if total > 0 %}
         window.addEventListener('load', function() {
-            document.getElementById('orderPopup').classList.add('show');
+            const orderPlaced = {{ 'true' if order_placed else 'false' }};
+            console.log('Order placed status:', orderPlaced);
+            if (orderPlaced) {
+                console.log('Showing popup...');
+                document.getElementById('orderPopup').classList.add('show');
+            }
         });
-        {% endif %}
 
         // Initialize button state
         updateTotal();
